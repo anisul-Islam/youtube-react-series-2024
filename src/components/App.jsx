@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import Users from './Users';
+import Users from './users/Users';
+import { usersData } from '../../data';
+import Layout from './layout/Layout';
 
 const App = () => {
+  const [users, setUsers] = useState(usersData);
+
   return (
-    <>
-      <Users />
-    </>
+    <Layout>
+      <Users users={users} setUsers={setUsers} />
+    </Layout>
   );
 };
 

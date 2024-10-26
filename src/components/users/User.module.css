@@ -1,0 +1,23 @@
+.user {
+  padding: var(--padding);
+}
+.user-info {
+  color: #555;
+}
+
+.user-body {
+  padding: 1rem;
+}
+
+.user-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.user-image {
+  width: 100%;
+  height: auto;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}

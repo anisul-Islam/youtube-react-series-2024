@@ -2,10 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import styles from './User.module.css';
-import Card from './Card';
+import Card from '../layout/Card';
 
 const User = (props) => {
-  const { name, email, imageUrl, gender, age, country } = props.user;
+  const { id, name, email, imageUrl, gender, age, country } = props.user;
+  const { setUsers } = props;
+
+  const handleDelete = (id) => {
+    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+  };
 
   return (
     <Card>
@@ -18,6 +23,9 @@ const User = (props) => {
             <p>Gender: {gender}</p>
             <p>Age: {age}</p>
             <p>Country: {country}</p>
+            <button className={`btn`} onClick={() => handleDelete(id)}>
+              Delete
+            </button>
           </div>
         </div>
       </article>
@@ -26,7 +34,9 @@ const User = (props) => {
 };
 
 User.propTypes = {
+  setUsers: PropTypes.func,
   user: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     imageUrl: PropTypes.string.isRequired,
