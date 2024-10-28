@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 // import { v4 as uuidv4 } from 'uuid';
 import { nanoid } from 'nanoid';
 import { uploadImageToCloduinary } from '../../utility/uploadImageToCloudinary';
+import styles from './AddUserForm.module.css';
 
 const AddUserForm = () => {
   const [name, setName] = useState('');
@@ -24,18 +25,20 @@ const AddUserForm = () => {
   };
 
   const handleCountryChange = (event) => {
-    setCountry(event.target);
+    setCountry(event.target.value);
   };
 
   const handleGenderChange = (event) => {
     setGender(event.target.value);
   };
+
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
     try {
       if (file) {
         const imageUrl = await uploadImageToCloduinary(file);
         setImage(imageUrl);
+        event.target.value = '';
       }
     } catch (error) {
       console.log(error);
@@ -54,42 +57,69 @@ const AddUserForm = () => {
       image: image,
     };
     console.log(newUser);
+
+    // reset the states
+    setName('');
+    setEmail('');
+    setCountry('');
+    setAge(0);
+    setGender('male');
+    setImage('');
   };
   return (
     <div>
-      <h2>Add User</h2>
-
-      <form onSubmit={handleSubmit}>
-        <div>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <h2>Add User</h2>
+        <div className={styles['form-group']}>
           <label htmlFor="name">Name: </label>
-          <input type="text" id="name" onChange={handleNameChange} />
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={handleNameChange}
+          />
         </div>
 
-        <div>
+        <div className={styles['form-group']}>
           <label htmlFor="email">Email: </label>
-          <input type="email" id="email" onChange={handleEmailChange} />
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={handleEmailChange}
+          />
         </div>
 
-        <div>
+        <div className={styles['form-group']}>
           <label htmlFor="age">Age: </label>
-          <input type="number" id="age" onChange={handleAgeChange} />
+          <input
+            type="number"
+            id="age"
+            value={age}
+            onChange={handleAgeChange}
+          />
         </div>
 
-        <div>
+        <div className={styles['form-group']}>
           <label htmlFor="country">Country: </label>
-          <input type="text" id="country" onChange={handleCountryChange} />
+          <input
+            type="text"
+            id="country"
+            value={country}
+            onChange={handleCountryChange}
+          />
         </div>
 
-        <div>
+        <div className={styles['form-group']}>
           <label htmlFor="gender">Gender: </label>
-          <select id="gender" onChange={handleGenderChange}>
+          <select id="gender" value={gender} onChange={handleGenderChange}>
             <option value="male">Male</option>
             <option value="female">Female</option>
             <option value="not-applicable">Not Applicable</option>
           </select>
         </div>
 
-        <div>
+        <div className={styles['form-group']}>
           <label htmlFor="image">User Image: </label>
           <input
             type="file"
