@@ -25,7 +25,7 @@ Users.propTypes = {
     PropTypes.shape({
       name: PropTypes.string.isRequired,
       email: PropTypes.string.isRequired,
-      imageUrl: PropTypes.string.isRequired,
+      image: PropTypes.string.isRequired,
       gender: PropTypes.string.isRequired,
       age: PropTypes.number.isRequired,
       country: PropTypes.string.isRequired,
