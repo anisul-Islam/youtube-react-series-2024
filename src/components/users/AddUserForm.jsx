@@ -5,66 +5,90 @@ import { uploadImageToCloduinary } from '../../utility/uploadImageToCloudinary';
 import styles from './AddUserForm.module.css';
 
 const AddUserForm = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [country, setCountry] = useState('');
-  const [gender, setGender] = useState('male');
-  const [age, setAge] = useState(0);
-  const [image, setImage] = useState('');
-
-  const handleNameChange = (event) => {
-    setName(event.target.value);
+  const initialValue = {
+    name: '',
+    email: '',
+    country: '',
+    gender: 'male',
+    age: 0,
+    image: '',
   };
 
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
-  };
+  const [user, setUser] = useState(initialValue);
+  const [errors, setErrors] = useState({});
+  const [fileInputKey, setFileInputKey] = useState(Date.now());
 
-  const handleAgeChange = (event) => {
-    setAge(event.target.value);
-  };
-
-  const handleCountryChange = (event) => {
-    setCountry(event.target.value);
-  };
-
-  const handleGenderChange = (event) => {
-    setGender(event.target.value);
-  };
-
-  const handleImageChange = async (event) => {
-    const file = event.target.files[0];
-    try {
+  const handleChange = async (event) => {
+    const { name, value, type, files } = event.target;
+    if (type === 'file') {
+      const file = files[0];
       if (file) {
-        const imageUrl = await uploadImageToCloduinary(file);
-        setImage(imageUrl);
-        event.target.value = '';
+        try {
+          const imageUrl = await uploadImageToCloduinary(file);
+          setUser((prevState) => ({
+            ...prevState,
+            [name]: imageUrl,
+          }));
+        } catch (error) {
+          console.log(error);
+        }
       }
-    } catch (error) {
-      console.log(error);
+    } else {
+      setUser((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
     }
+  };
+
+  const validateForm = () => {
+    const newErros = {};
+    if (!user.name.trim()) {
+      newErros.name = 'User name is required';
+    }
+    if (user.name.trim().length < 2) {
+      newErros.name = 'User name should be at least 2 characters long';
+    }
+    if (!user.email.trim()) {
+      newErros.email = 'User email is required';
+    }
+    if (!user.age || user.age <= 0) {
+      newErros.age = 'User age must be a positive integer';
+    }
+    if (user.country.trim().length < 2) {
+      newErros.country = 'User country name should be at least 2 characters long';
+    }
+    if (!user.gender.trim()) {
+      newErros.gender = 'User gender is required';
+    }
+    if (!user.image.trim()) {
+      newErros.image = 'User image is required';
+    }
+
+    setErrors(newErros);
+    return Object.keys(newErros).length === 0;
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const newUser = {
-      id: nanoid(),
-      name: name,
-      email: email,
-      age: age,
-      country: country,
-      gender: gender,
-      image: image,
-    };
-    console.log(newUser);
 
-    // reset the states
-    setName('');
-    setEmail('');
-    setCountry('');
-    setAge(0);
-    setGender('male');
-    setImage('');
+    if (validateForm()) {
+      const newUser = {
+        id: nanoid(),
+        name: user.name,
+        email: user.email,
+        age: user.age,
+        country: user.country,
+        gender: user.gender,
+        image: user.image,
+      };
+      console.log(newUser);
+      // reset the states
+      setUser(initialValue);
+      setFileInputKey(Date.now());
+    } else {
+      console.log('your form is not valid');
+    }
   };
   return (
     <div>
@@ -75,9 +99,12 @@ const AddUserForm = () => {
           <input
             type="text"
             id="name"
-            value={name}
-            onChange={handleNameChange}
+            value={user.name}
+            name="name"
+            onChange={handleChange}
+            required
           />
+          {errors.name && <p>{errors.name}</p>}
         </div>
 
         <div className={styles['form-group']}>
@@ -85,9 +112,12 @@ const AddUserForm = () => {
           <input
             type="email"
             id="email"
-            value={email}
-            onChange={handleEmailChange}
+            value={user.email}
+            name="email"
+            onChange={handleChange}
+            required
           />
+          {errors.email && <p>{errors.email}</p>}
         </div>
 
         <div className={styles['form-group']}>
@@ -95,9 +125,12 @@ const AddUserForm = () => {
           <input
             type="number"
             id="age"
-            value={age}
-            onChange={handleAgeChange}
+            value={user.age}
+            name="age"
+            onChange={handleChange}
+            required
           />
+          {errors.age && <p>{errors.age}</p>}
         </div>
 
         <div className={styles['form-group']}>
@@ -105,33 +138,47 @@ const AddUserForm = () => {
           <input
             type="text"
             id="country"
-            value={country}
-            onChange={handleCountryChange}
+            value={user.country}
+            name="country"
+            onChange={handleChange}
+            required
           />
+          {errors.country && <p>{errors.country}</p>}
         </div>
 
         <div className={styles['form-group']}>
           <label htmlFor="gender">Gender: </label>
-          <select id="gender" value={gender} onChange={handleGenderChange}>
+          <select
+            id="gender"
+            value={user.gender}
+            name="gender"
+            onChange={handleChange}
+            required
+          >
             <option value="male">Male</option>
             <option value="female">Female</option>
             <option value="not-applicable">Not Applicable</option>
           </select>
+          {errors.gender && <p>{errors.gender}</p>}
         </div>
 
         <div className={styles['form-group']}>
           <label htmlFor="image">User Image: </label>
           <input
+            name="image"
             type="file"
             id="image"
             accept="image/*"
-            onChange={handleImageChange}
+            onChange={handleChange}
+            key={fileInputKey}
+            required
           />
-          {image && (
+          {user.image && (
             <div>
-              <img src={image} alt={name} />
+              <img src={user.image} alt={user.name} />
             </div>
           )}
+          {errors.image && <p>{errors.image}</p>}
         </div>
 
         <button type="submit">Add User</button>

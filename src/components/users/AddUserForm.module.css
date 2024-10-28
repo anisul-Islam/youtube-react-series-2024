@@ -87,3 +87,19 @@ button[type='submit']:hover {
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
 }
+
+/* Error message styling */
+.form-group p {
+  color: #d9534f; /* Bootstrap’s “danger” red */
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+}
+
+/* Error message styling with icon */
+.form-group p::before {
+  content: '⚠️ ';
+  margin-right: 0.25rem;
+  font-size: 1rem;
+  vertical-align: middle;
+}
