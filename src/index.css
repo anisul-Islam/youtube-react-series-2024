@@ -162,3 +162,9 @@ button[type='submit']:hover {
   font-size: 1rem;
   vertical-align: middle;
 }
+
+.form-preview-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}

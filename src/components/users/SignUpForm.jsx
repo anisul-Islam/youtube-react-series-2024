@@ -7,6 +7,7 @@ import FormButton from '../form/FormButton';
 import FormGroup from '../form/FormGroup';
 import ImagePreview from '../form/ImagePreview';
 import FormSelectGroup from '../form/FormSelectGroup';
+import LoadingSpinner from '../LoadingSpinner';
 
 const SignUpForm = () => {
   const initialValue = {
@@ -21,11 +22,13 @@ const SignUpForm = () => {
   const [user, setUser] = useState(initialValue);
   const [errors, setErrors] = useState({});
   const [fileInputKey, setFileInputKey] = useState(Date.now());
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = async (event) => {
     const { name, value, type, files } = event.target;
     if (type === 'file' && files[0]) {
       try {
+        setIsLoading(true);
         const imageUrl = await uploadImageToCloduinary(files[0]);
         setUser((prevState) => ({
           ...prevState,
@@ -33,6 +36,8 @@ const SignUpForm = () => {
         }));
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     } else {
       setUser((prevState) => ({
@@ -170,8 +175,14 @@ const SignUpForm = () => {
           error={errors.image}
         />
 
-        <ImagePreview src={user.image} alt="Uploaded user image" />
-        <FormButton type="submit"> Sign Up </FormButton>
+        <div className="form-preview-container">
+          <ImagePreview src={user.image} alt="Uploaded user image" />
+          {isLoading && <LoadingSpinner />}
+        </div>
+
+        <FormButton type="submit" disabled={isLoading}>
+          Sign Up
+        </FormButton>
       </form>
     </div>
   );
