@@ -1,3 +1,4 @@
+//@ts-nocheck
 export const uploadImageToCloduinary = async (file) => {
   const cloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
   const cloudinaryPreset = import.meta.env.VITE_CLOUDINARY_PRESET;

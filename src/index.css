@@ -54,3 +54,111 @@ img {
   background-color: #fff;
   color: green;
 }
+
+/* form related css here  */
+/* Styling for form header */
+.form h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+/* Optional: Add underline or decorative line below the heading */
+.form h2::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 3px;
+  background-color: var(--primary-color);
+  margin: 0.5rem auto 0;
+}
+
+/* General form styling */
+.form {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.form-group input[type='text'],
+.form-group input[type='email'],
+.form-group input[type='number'],
+.form-group input[type='file'],
+.form-group select {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.form-group input[type='text']:focus,
+.form-group input[type='email']:focus,
+.form-group input[type='number']:focus,
+.form-group input[type='file']:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+button[type='submit'] {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1.1rem;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+button[type='submit']:hover {
+  background-color: var(--secondary-color);
+}
+
+.image-preview {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin-top: 1rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+}
+
+/* Error message styling */
+.form-group p {
+  color: #d9534f; /* Bootstrap’s “danger” red */
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+}
+
+/* Error message styling with icon */
+.form-group p::before {
+  content: '⚠️ ';
+  margin-right: 0.25rem;
+  font-size: 1rem;
+  vertical-align: middle;
+}

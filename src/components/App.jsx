@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Users from './users/Users';
 import { usersData } from '../../data';
 import Layout from './layout/Layout';
-import AddUserForm from './users/AddUserForm';
+import AddUserForm from './users/SignUpForm';
 
 const App = () => {
   const [users, setUsers] = useState(usersData);
