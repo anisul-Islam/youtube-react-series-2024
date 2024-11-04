@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 import Users from './users/Users';
 import { usersData } from '../../data';
 import Layout from './layout/Layout';
-import AddUserForm from './users/SignUpForm';
+import SignUpForm from './users/SignUpForm';
 
 const App = () => {
   const [users, setUsers] = useState(usersData);
+
   return (
     <Layout>
-      <AddUserForm />
+      <ToastContainer />
+      <SignUpForm setUsers={setUsers} />
       <Users users={users} setUsers={setUsers} />
     </Layout>
   );

@@ -5,13 +5,15 @@ import { FaRegTrashCan } from 'react-icons/fa6';
 
 import styles from './User.module.css';
 import Card from '../layout/Card';
+import { toast } from 'react-toastify';
 
 const User = (props) => {
   const { id, name, email, image, gender, age, country } = props.user;
   const { setUsers } = props;
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+    toast.success('user is deleted successfully');
   };
 
   return (

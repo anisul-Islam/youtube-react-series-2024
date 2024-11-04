@@ -13,8 +13,8 @@ const FormSelectGroup = ({
   onChange,
   required,
   error,
-  options,
-  placeholder,
+  options=[],
+  placeholder='',
 }) => {
   return (
     <div className="form-group">

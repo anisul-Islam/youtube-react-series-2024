@@ -1,7 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const FormSelect = ({ id, value, name, onChange, required, options, placeholder }) => {
+const FormSelect = ({
+  id,
+  value,
+  name,
+  onChange,
+  required,
+  options,
+  placeholder,
+}) => {
   return (
     <select
       id={id}
@@ -25,6 +33,7 @@ const FormSelect = ({ id, value, name, onChange, required, options, placeholder 
 FormSelect.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  placeholder: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   required: PropTypes.bool,

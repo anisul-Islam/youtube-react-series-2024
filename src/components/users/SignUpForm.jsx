@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
+import ClipLoader from 'react-spinners/ClipLoader';
 // import { v4 as uuidv4 } from 'uuid';
 import { nanoid } from 'nanoid';
+import { toast } from 'react-toastify';
+import PropTypes from 'prop-types';
 
-import { uploadImageToCloduinary } from '../../utility/uploadImageToCloudinary';
 import FormButton from '../form/FormButton';
 import FormGroup from '../form/FormGroup';
 import ImagePreview from '../form/ImagePreview';
 import FormSelectGroup from '../form/FormSelectGroup';
 import LoadingSpinner from '../LoadingSpinner';
+import { uploadImageToCloduinary } from '../../utility/uploadImageToCloudinary';
+import { signUpfields } from './userFileds';
 
-const SignUpForm = () => {
+const SignUpForm = ({ setUsers }) => {
   const initialValue = {
     name: '',
     email: '',
     country: '',
     gender: 'Select gender',
-    age: 0,
+    age: '',
     image: '',
   };
 
@@ -24,6 +28,7 @@ const SignUpForm = () => {
   const [fileInputKey, setFileInputKey] = useState(Date.now());
   const [isLoading, setIsLoading] = useState(false);
 
+ 
   const handleChange = async (event) => {
     const { name, value, type, files } = event.target;
     if (type === 'file' && files[0]) {
@@ -35,44 +40,46 @@ const SignUpForm = () => {
           [name]: imageUrl,
         }));
       } catch (error) {
-        console.error(error);
+        toast.error(error);
       } finally {
         setIsLoading(false);
       }
     } else {
       setUser((prevState) => ({
         ...prevState,
-        [name]: value,
+        [name]: name === 'age' ? Number(value) : value,
       }));
     }
   };
 
   const validateForm = () => {
-    const newErros = {};
+    const newErrors = {};
     if (!user.name.trim()) {
-      newErros.name = 'Name is required';
+      newErrors.name = 'Name is required';
     }
     if (user.name.trim().length < 2) {
-      newErros.name = 'Name should be at least 2 characters long';
+      newErrors.name = 'Name should be at least 2 characters long';
     }
     if (!user.email.trim()) {
-      newErros.email = 'Email is required';
+      newErrors.email = 'Email is required';
     }
-    if (!user.age || user.age <= 0) {
-      newErros.age = 'Age must be a positive integer';
-    }
+    if (typeof user.age !== 'number' || user.age <= 0)
+      newErrors.age = 'Age must be a positive integer';
     if (user.country.trim().length < 2) {
-      newErros.country = 'Country name should be at least 2 characters long';
+      newErrors.country = 'Country name should be at least 2 characters long';
     }
     if (!user.gender) {
-      newErros.gender = 'Please select a gender';
+      newErrors.gender = 'Please select a gender';
+    }
+    if (user.gender === 'Select gender') {
+      newErrors.gender = 'Please select a gender';
     }
     if (!user.image.trim()) {
-      newErros.image = 'Image is required';
+      newErrors.image = 'Image is required';
     }
 
-    setErrors(newErros);
-    return Object.keys(newErros).length === 0;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (event) => {
@@ -89,95 +96,53 @@ const SignUpForm = () => {
         // gender: user.gender,
         // image: user.image,
       };
-      console.log(newUser);
+      setUsers((prevUsers) => [...prevUsers, newUser]);
+      toast.success('User is created successfully');
       // reset the states
       setUser(initialValue);
       setFileInputKey(Date.now());
     } else {
-      console.warn('Form validation failed');
+      toast.error('Form validation failed');
     }
   };
   return (
     <div>
       <form onSubmit={handleSubmit} className="form">
         <h2>Sign Up</h2>
-        {/* id, label, name, type, value, onChange, required, accept, error, */}
-        <FormGroup
-          id="name"
-          label="Name"
-          type="text"
-          name="name"
-          value={user.name}
-          onChange={handleChange}
-          required={true}
-          error={errors.name}
-        />
-
-        <FormGroup
-          id="email"
-          label="Email"
-          type="email"
-          name="email"
-          value={user.email}
-          onChange={handleChange}
-          required={true}
-          error={errors.email}
-        />
-
-        <FormGroup
-          id="age"
-          label="Age"
-          type="number"
-          name="age"
-          value={user.age}
-          onChange={handleChange}
-          required={true}
-          error={errors.age}
-        />
-
-        <FormGroup
-          id="country"
-          label="Country"
-          type="text"
-          name="country"
-          value={user.country}
-          onChange={handleChange}
-          required={true}
-          error={errors.country}
-        />
-
-        <FormSelectGroup
-          id="gender"
-          label="Gender"
-          name="gender"
-          value={user.gender}
-          onChange={handleChange}
-          required={true}
-          error={errors.gender}
-          options={[
-            { label: 'Male', value: 'male' },
-            { label: 'Female', value: 'female' },
-            { label: 'Not Applicable', value: 'not-applicable' },
-          ]}
-          placeholder="Select gender"
-        />
-
-        <FormGroup
-          id="image"
-          label="Image"
-          type="file"
-          name="image"
-          value={user.image}
-          onChange={handleChange}
-          required={true}
-          accept="image/*"
-          key={fileInputKey}
-          error={errors.image}
-        />
+        {signUpfields.map((field) => {
+          return field.type === 'select' ? (
+            <FormSelectGroup
+              key={field.id}
+              id={field.id}
+              label={field.label}
+              name={field.name}
+              value={user[field.name]}
+              onChange={handleChange}
+              required={field.required}
+              error={errors[field.name]}
+              options={field.options}
+              placeholder={field.placeholder}
+            />
+          ) : (
+            <FormGroup
+              key={field.name === 'image' ? fileInputKey : field.id} // only reset file input when `image`
+              id={field.id}
+              label={field.label}
+              type={field.type}
+              name={field.name}
+              value={user[field.name]}
+              onChange={handleChange}
+              required={field.required}
+              error={errors[field.name]}
+              accept={field.accept}
+            />
+          );
+        })}
 
         <div className="form-preview-container">
           <ImagePreview src={user.image} alt="Uploaded user image" />
           {isLoading && <LoadingSpinner />}
+          {/* {isLoading && <ClipLoader size={40} color='#09f'/>} */}
         </div>
 
         <FormButton type="submit" disabled={isLoading}>
@@ -186,6 +151,10 @@ const SignUpForm = () => {
       </form>
     </div>
   );
+};
+
+SignUpForm.propTypes = {
+  setUsers: PropTypes.func,
 };
 
 export default SignUpForm;
